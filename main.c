@@ -1,4 +1,4 @@
-#include "lexer.h"
+#include "lexer/lexer.h"
 
 // calculates file size without considering last EOF character
 unsigned int file_size(FILE* fptr) {

@@ -1,5 +1,5 @@
 compile:
-	gcc -g -o compiler *.c 
+	gcc -g -o compiler $(shell find . -name  '*.c') 
 
 run: 
 	./compiler 
