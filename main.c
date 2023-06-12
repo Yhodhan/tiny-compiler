@@ -35,6 +35,7 @@ Lexer init_lexer(char* path) {
   lex.source  = malloc(sizeof(char)*(size+1));  
   read_file(fptr, &lex);
 
+
   // close file descriptor
   fclose(fptr);
   return lex;

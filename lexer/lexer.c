@@ -31,7 +31,8 @@ char peek(Lexer* lex){
 }
 
 // invalid token found, print error message and exit
-void aborted(char ch){
+void aborted(Lexer* lex, char ch){
+  delete_lex(lex);
   printf("unknown token %c \n", ch);
   exit(1);
 }
@@ -80,7 +81,7 @@ Token get_token(Lexer* lex) {
       }
     break;
     default:
-      aborted(ch);
+      aborted(lex, ch);
   };
 
   return token;
