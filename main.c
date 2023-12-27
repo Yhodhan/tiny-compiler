@@ -20,7 +20,7 @@ void read_file(FILE* fptr, Lexer* lex){
     lex->source[i] = ch;
     i++;
   } while(ch != EOF);
-  lex->source[i] = '\0';
+  lex->source[i-1] = '\0';
 }
 
 Lexer init_lexer(char* path) {

@@ -52,7 +52,6 @@ void skip_comment(Lexer* lex){
 Token get_token(Lexer* lex) {
   skip_white_space(lex);
   char ch = lex->cur_char;  
-  printf("char is %c \n", ch);
   Token token;
 
   switch(ch) {
@@ -78,6 +77,37 @@ Token get_token(Lexer* lex) {
       if (peek(lex) == '='){
         next_char(lex);
         token = new_token('=', EQEQ);
+      }
+      else {
+        next_char(lex);
+        token = new_token('=', EQ);
+      }
+    break;
+    case '>':
+      if (peek(lex) == '='){
+        next_char(lex);
+        token = new_token( '>', GTEQ);
+      }
+      else {
+        token = new_token('>', GT);
+      }
+    break;
+    case '<':
+      if (peek(lex) == '='){
+        next_char(lex);
+        token = new_token( '<', LTEQ);
+      }
+      else {
+        token = new_token('<', LT);
+      }
+    break;
+    case '!':
+      if (peek(lex) == '='){
+        next_char(lex);
+        token = new_token('!', NOTEQ);
+      }
+      else {
+        aborted(lex, ch);
       }
     break;
     default:
