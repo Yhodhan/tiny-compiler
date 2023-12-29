@@ -31,11 +31,12 @@ char peek(Lexer* lex){
 }
 
 // invalid token found, print error message and exit
-void aborted(Lexer* lex, char ch){
+void aborted(Lexer* lex, char* ch){
   delete_lex(lex);
-  printf("unknown token %c \n", ch);
+  printf("unknown token %s \n", ch);
   exit(1);
 }
+
 // skip whitespace execpt newlines
 void skip_white_space(Lexer* lex){
   char ch = lex->cur_char;
@@ -44,74 +45,155 @@ void skip_white_space(Lexer* lex){
     ch = lex->cur_char;
   }
 }
+
 // skip comments in the code
 void skip_comment(Lexer* lex){
-  
+  if (lex->cur_char == '#'){
+    while (lex->cur_char != '\n') {
+      next_char(lex);
+    }
+  }  
 }
+
 // return the next token
 Token get_token(Lexer* lex) {
   skip_white_space(lex);
-  char ch = lex->cur_char;  
+  skip_comment(lex);
+  char ch[2];
+  ch[0] = lex->cur_char;  
+  ch[1] = '\0';
   Token token;
 
-  switch(ch) {
+  switch(ch[0]) {
     case '+':
       token = new_token(ch, PLUS);   
     break;
+
     case '-':
       token = new_token(ch, MINUS);   
     break;
+
     case '*':
       token = new_token(ch, ASTERISK);   
     break;
+
     case '/':
       token = new_token(ch, SLASH);   
     break;
+
     case '\n':
       token = new_token(ch, NEWLINE);   
     break;
+
     case '\0':
       token = new_token(ch, EOF);   
     break;
+
     case '=':
       if (peek(lex) == '='){
         next_char(lex);
-        token = new_token('=', EQEQ);
+        token = new_token("==", EQEQ);
       }
       else {
         next_char(lex);
-        token = new_token('=', EQ);
+        token = new_token("=", EQ);
       }
     break;
+
     case '>':
       if (peek(lex) == '='){
         next_char(lex);
-        token = new_token( '>', GTEQ);
+        token = new_token(">=", GTEQ);
       }
       else {
-        token = new_token('>', GT);
+        token = new_token(">", GT);
       }
     break;
+
     case '<':
       if (peek(lex) == '='){
         next_char(lex);
-        token = new_token( '<', LTEQ);
+        token = new_token("<=", LTEQ);
       }
       else {
-        token = new_token('<', LT);
+        token = new_token("<", LT);
       }
     break;
+
     case '!':
       if (peek(lex) == '='){
         next_char(lex);
-        token = new_token('!', NOTEQ);
+        token = new_token("!=", NOTEQ);
       }
       else {
-        aborted(lex, ch);
+        aborted(lex, "unknown character");
       }
     break;
+
+    case '\"':
+      // characters between quoatations
+      next_char(lex);
+      int begin = lex->cur_pos;
+
+      while (lex->cur_char != '\"') {
+        if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%') {
+          aborted(lex, "Illegal character");
+        }
+        next_char(lex);
+      }
+
+      // extract string text from source 
+      int end = lex->cur_pos;
+      int size = end - begin;
+      char* buffer = malloc(sizeof(char) * size+1);  
+      buffer[size] = '\0';      
+
+      int j = 0;
+      for(int i = begin; i < end; i++){
+         buffer[j] = lex->source[i]; 
+        j++;
+      }
+
+      token = new_token(buffer, STRING);      
+      free(buffer);
+    break;
+      
     default:
-      aborted(lex, ch);
+      if (isdigit(ch[0])) {
+         int begin = lex->cur_pos;
+
+         while (isdigit(peek(lex))){
+           next_char(lex);
+         }
+
+         if(peek(lex) == '.') { // decimal
+           next_char(lex);
+
+           if (!isdigit(peek(lex))){
+             aborted(lex, "Illegal character in number");
+           }
+           
+           while (isdigit(peek(lex))){
+             next_char(lex);
+           }
+         }
+
+         int end = lex->cur_pos;
+         int size = end - begin + 1;
+         char* buffer = malloc(sizeof(char) * size+1);  
+         buffer[size] = '\0';      
+
+         int j = 0;
+         for(int i = begin; i <= end; i++){
+            buffer[j] = lex->source[i]; 
+           j++;
+         }
+
+         token = new_token(buffer, NUMBER);      
+         free(buffer);
+      }
+      else
+       aborted(lex, ch);
   };
 
   return token;

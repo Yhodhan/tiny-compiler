@@ -37,11 +37,12 @@ enum TokenType {
 
 
 struct Token{
-  char text;
+  char* text;
   enum TokenType type;
 };
 
 typedef struct Token Token;
 
-Token new_token(char ch, enum TokenType type);
+Token new_token(char* ch, enum TokenType type);
+void delete_token(Token t);
 #endif

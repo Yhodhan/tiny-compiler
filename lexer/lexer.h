@@ -3,6 +3,7 @@
 
 #include "stdlib.h"
 #include "stdio.h"
+#include <ctype.h>
 #include "../token/token.h"
 
 struct Lexer{
@@ -16,7 +17,7 @@ typedef struct Lexer Lexer;
 
 char peek(Lexer* lex);
 void next_char(Lexer* lex);
-void aborted(Lexer*lex, char ch);
+void aborted(Lexer*lex, char* ch);
 void skip_white_space(Lexer* lex);
 void skip_comment(Lexer* lex);
 void delete_lex(Lexer* lex);
