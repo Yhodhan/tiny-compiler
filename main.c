@@ -43,7 +43,7 @@ Lexer init_lexer(char* path) {
 }
 
 int main(){
-  Lexer lex = init_lexer("test/case.pcc");
+  Lexer lex = init_lexer("test/case2.pcc");
   Token token = get_token(&lex);
   // try lexer
   while(token.type != EOF){

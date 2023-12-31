@@ -3,6 +3,7 @@
 
 #include "stdlib.h"
 #include "stdio.h"
+#include "string.h"
 
 enum TokenType {
 	NEWLINE =0,
@@ -35,6 +36,10 @@ enum TokenType {
 	GTEQ = 211,
 };
 
+struct Keyword {
+	char label [9];
+	int type;
+};
 
 struct Token{
   char* text;
@@ -45,4 +50,5 @@ typedef struct Token Token;
 
 Token new_token(char* ch, enum TokenType type);
 void delete_token(Token t);
+int check_if_keyword(char* str);
 #endif

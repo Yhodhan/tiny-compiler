@@ -192,6 +192,35 @@ Token get_token(Lexer* lex) {
          token = new_token(buffer, NUMBER);      
          free(buffer);
       }
+      else if (isalpha(ch[0])) {
+        int begin = lex->cur_pos;
+
+        while(isalnum(peek(lex))) {
+          next_char(lex);
+        }
+
+        int end = lex->cur_pos;
+        int size = end - begin + 1;
+        
+        char* buffer = malloc(sizeof(char) * size+1);  
+        buffer[size] = '\0';      
+
+        int j = 0;
+        for(int i = begin; i < end; i++){
+           buffer[j] = lex->source[i]; 
+          j++;
+        }
+
+        int key = check_if_keyword(buffer);
+        
+        if (!key) {
+          token = new_token(buffer, IDENT);      
+        }
+        else {
+          token = new_token(buffer, key);      
+        }
+        free(buffer);
+      }
       else
        aborted(lex, ch);
   };
