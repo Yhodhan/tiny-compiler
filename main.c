@@ -46,7 +46,7 @@ int main(){
   Lexer lex = init_lexer("test/case.pcc");
   Token token = get_token(&lex);
   // try lexer
-  while(token.type != EOF){
+  while(token.type != END){
     printf("token text %s \n", token.text);
     printf("token type %d \n", token.type);
     next_char(&lex);

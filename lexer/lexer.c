@@ -86,7 +86,7 @@ Token get_token(Lexer* lex) {
     break;
 
     case '\0':
-      token = new_token(ch, EOF);   
+      token = new_token(ch, END);   
     break;
 
     case '=':

@@ -6,7 +6,7 @@
 #include "string.h"
 
 enum TokenType {
-	NEWLINE =0,
+	NEWLINE = 0,
 	NUMBER = 1,
 	IDENT = 2,
 	STRING = 3,
@@ -34,6 +34,8 @@ enum TokenType {
 	LTEQ = 209,
 	GT = 210,
 	GTEQ = 211,
+	//	EOF
+	END = -1,
 };
 
 struct Token{

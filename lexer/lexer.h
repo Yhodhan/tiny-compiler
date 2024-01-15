@@ -10,7 +10,7 @@ struct Lexer{
   char* source;
   char cur_char;
   int cur_pos;
-  unsigned source_size;
+  int source_size;
 };
 
 typedef struct Lexer Lexer;
