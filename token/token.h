@@ -36,11 +36,6 @@ enum TokenType {
 	GTEQ = 211,
 };
 
-struct Keyword {
-	char label [9];
-	int type;
-};
-
 struct Token{
   char* text;
   enum TokenType type;
