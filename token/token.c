@@ -1,27 +1,41 @@
 #include "token.h"
 #include <string.h>
 
-struct Keyword keyword [] = {
-	// Keywords.,
-	{"LABEL", 101},
-	{"GOTO", 102},
-	{"PRINT", 103},
-	{"INPUT", 104},
-	{"LET", 105},
-	{"IF", 106},
-	{"THEN", 107},
-	{"ENDIF", 108},
-	{"WHILE", 109},
-	{"REPEAT", 110},
-	{"ENDWHILE", 111},
-};
-
 int check_if_keyword(char* str) {
-  for(int i = 0; i < 26; i++) {
-    if (!strcmp(str, keyword[i].label)) {
-      return keyword[i].type;
-    }
+  if (!strcmp(str, "LABEL")) {
+    return 101;
   }
+  if (!strcmp(str, "GOTO")) {
+    return 102;
+  }
+  if (!strcmp(str, "PRINT")) {
+    return 103;
+  }
+  if (!strcmp(str, "INPUT")) {
+    return 104;
+  }
+  if (!strcmp(str, "LET")) {
+    return 105;
+  }
+  if (!strcmp(str, "IF")) {
+    return 106;
+  }
+  if (!strcmp(str, "THEN")) {
+    return 107;
+  }
+  if (!strcmp(str, "ENDIF")) {
+    return 108;
+  }
+  if (!strcmp(str, "WHILE")) {
+    return 109;
+  }
+  if (!strcmp(str, "REPEAT")) {
+    return 110;
+  }
+  if (!strcmp(str, "ENDWHILE")) {
+    return 111;
+  }
+
   return 0;
 }
 

@@ -206,7 +206,7 @@ Token get_token(Lexer* lex) {
         buffer[size] = '\0';      
 
         int j = 0;
-        for(int i = begin; i < end; i++){
+        for(int i = begin; i <= end; i++){
            buffer[j] = lex->source[i]; 
           j++;
         }
