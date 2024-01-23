@@ -1,11 +1,13 @@
 #include "lexer.h"
 
 Lexer new_lex(unsigned int size){
-  Lexer lex;
-  lex.cur_pos = -1;
-  lex.cur_char = ' ';
-  lex.source_size = size;
-  lex.source = NULL;
+  Lexer lex = {
+  .cur_pos = -1,
+  .cur_char = ' ',
+  .source_size = size,
+  .source = NULL
+  };
+
   return lex;
 }
 
