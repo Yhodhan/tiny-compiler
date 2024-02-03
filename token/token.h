@@ -36,6 +36,8 @@ enum TokenType {
 	GTEQ = 211,
 	//	EOF
 	END = -1,
+	// New: used just for initialization
+	NEW = 222,
 };
 
 struct Token{
