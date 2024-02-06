@@ -39,6 +39,56 @@ void next_token(Parser *parser){
 
 void parser_aborted(Parser *parser){
   delete_lex(&parser->lexer);
-  printf("Error processing tokens");
+  printf("Error processing tokens \n");
   exit(1);
+}
+
+void program(Parser *parser){
+  printf("************************* \n");
+  printf("         PROGRAM \n");
+  printf("************************* \n");
+
+  // parse all the statements in the program
+  while (!check_token(parser, EOF)) {
+    statement(parser);
+  }
+}
+
+void statement(Parser *parser){
+  // check what kind of statement is 
+
+  // PRINT (expression | string)
+  if (check_token(parser, PRINT)){
+    printf("************************* \n");
+    printf("      STATEMENT PRINT \n");
+    printf("************************* \n");
+
+    next_token(parser);
+
+    if (check_token(parser, STRING)){
+      next_token(parser);
+    }
+    else {
+      expression(parser);
+    }
+  }
+
+  // newline
+  nl(parser);
+}
+
+void expression(Parser *parser) {
+  
+}
+
+void nl(Parser *parser){
+  printf("*************************\n");
+  printf("      NEWLINE \n");
+  printf("*************************\n");
+
+  // require at least one newline
+  match(parser, NEWLINE);
+  while (check_token(parser, NEWLINE)){
+    next_token(parser);
+  }
 }

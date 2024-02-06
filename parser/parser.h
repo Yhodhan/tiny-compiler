@@ -18,5 +18,9 @@ void match(Parser *parser, enum TokenType kind);
 int check_peek(Parser *parser, enum TokenType kind);
 int check_token(Parser *parser, enum TokenType kind);
 void next_token(Parser *parser);
+void statement(Parser *parser);
+void expression(Parser *parser);
+void program(Parser *parser);
+void nl(Parser *parser);
 
 #endif

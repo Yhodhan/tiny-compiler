@@ -1,5 +1,7 @@
 #include "lexer/lexer.h"
+#include "parser/parser.h"
 #include "token/token.h"
+#include <stdio.h>
 
 // calculates file size without considering last EOF character
 unsigned int file_size(FILE* fptr) {
@@ -42,19 +44,21 @@ Lexer init_lexer(char* path) {
   return lex;
 }
 
-int main(){
-  Lexer lex = init_lexer("test/case.pcc");
-  Token token = get_token(&lex);
-  // try lexer
-  while(token.type != END){
-    printf("token text %s \n", token.text);
-    printf("token type %d \n", token.type);
-    next_char(&lex);
-    delete_token(token);
-    token = get_token(&lex);
-  };
-  delete_token(token);
+int main(int argc, char* argv[]){
+  printf("*************************\n");
+  printf("    compiler initiates   \n");
+  printf("*************************\n");
 
-  delete_lex(&lex);
+  if (argc < 1){
+    printf("Error: Compiler needs source file as argument");
+    exit(1);
+  }
+
+  Lexer lexer = init_lexer(argv[1]);
+  Parser parser = init_parser(lexer); 
+
+  program(&parser);
+  printf("Parsing completed\n");
+    
   return 0;
 }

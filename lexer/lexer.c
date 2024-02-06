@@ -204,7 +204,7 @@ Token get_token(Lexer* lex) {
         int end = lex->cur_pos;
         int size = end - begin + 1;
         
-        char* buffer = malloc(sizeof(char) * size+1);  
+        char* buffer = malloc(sizeof(char) * (size+1));  
         buffer[size] = '\0';      
 
         int j = 0;
@@ -227,6 +227,7 @@ Token get_token(Lexer* lex) {
        aborted(lex, ch);
   };
 
+  next_char(lex);
   return token;
 }
 

@@ -1,14 +1,14 @@
 compile:
-	gcc -g -O3 -Werror -W -o compiler $(shell find . -name  '*.c') 
+	gcc -g -Werror -W -o compiler $(shell find . -name  '*.c') 
 
 run: 
-	./compiler 
+	./compiler test/case2.pcc
 
 valgrind:
-	valgrind ./compiler
+	valgrind ./compiler test/case2.pcc
 
 debug:
-	gdb ./compiler
+	gdb --args ./compiler test/case2.pcc
 	
 clean:
 	rm compiler 
