@@ -15,16 +15,19 @@ ListTracker init() {
 
 void* tmalloc(unsigned int size) {
   void* alloc_mem = (void*) malloc(size);
+  Node* new_node = malloc(sizeof(Node));
+
   if (!initialized){
     list = init();
   }
+
   if (list.head == NULL){
-    list.head = malloc(sizeof(Node));
+    list.head = new_node;
     list.head->next  = NULL;
     list.head->ptr = alloc_mem;
-  } else {
+  } 
+  else {
 
-    Node* new_node = malloc(sizeof(Node));
     new_node->next = list.head;
     new_node->ptr = alloc_mem;
     list.head = new_node;
@@ -37,6 +40,7 @@ void tfree() {
   if (list.head == NULL) {
     return;
   }
+
   Node* n = list.head;
   while (n->next != NULL){
     Node* temp = n->next;
@@ -44,6 +48,7 @@ void tfree() {
     free(n);
     n = temp;
   }
+
   free(n->ptr);
   free(n);
 }

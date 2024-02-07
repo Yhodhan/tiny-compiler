@@ -1,5 +1,45 @@
 #include "lexer.h"
 
+unsigned int file_size(FILE* fptr) {
+   char ch;
+   unsigned int size = 0;
+   do {
+     ch = fgetc(fptr);
+     size++;
+   } while(ch != EOF);
+
+   return size;
+}
+
+void read_file(FILE* fptr, Lexer* lex){
+  char ch;
+  int i = 0;
+  do {
+    ch = fgetc(fptr);
+    lex->source[i] = ch;
+    i++;
+  } while(ch != EOF);
+
+  lex->source[i-1] = '\0';
+}
+
+Lexer init_lexer(char* path) {
+  // get file size
+  // return pointer to file init
+  FILE* fptr = fopen(path, "r+");
+  unsigned int size = file_size(fptr);
+  rewind(fptr);
+
+  // create lexer and copy source code
+  Lexer lex = new_lex(size);
+  lex.source  = tmalloc(sizeof(char)*(size+1));  
+  read_file(fptr, &lex);
+
+  // close file descriptor
+  fclose(fptr);
+  return lex;
+}
+
 Lexer new_lex(unsigned int size){
   Lexer lex = {
   .cur_pos = -1,
@@ -57,6 +97,7 @@ void skip_comment(Lexer* lex){
   }  
 }
 
+// copy string from specific location of source file
 char* copy_from_source(int begin, Lexer* lex) {
   int end = lex->cur_pos;
   int size = end - begin + 1;

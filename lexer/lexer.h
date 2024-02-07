@@ -24,5 +24,6 @@ void delete_lex(Lexer* lex);
 Token get_token(Lexer* lex);
 Lexer new_lex(unsigned int size);
 char* copy_from_source(int begin, Lexer* lex); 
+Lexer init_lexer(char* path); 
 
 #endif
