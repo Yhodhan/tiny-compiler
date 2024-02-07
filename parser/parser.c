@@ -37,15 +37,15 @@ void next_token(Parser *parser){
   parser->peek_token = get_token(&parser->lexer);
 }
 
-void parser_aborted(Parser *parser){
-  delete_lex(&parser->lexer);
+void parser_aborted(){
   printf("Error processing tokens \n");
+  tfree();
   exit(1);
 }
 
 void program(Parser *parser){
   printf("************************* \n");
-  printf("         PROGRAM \n");
+  printf("         PROGRAM          \n");
   printf("************************* \n");
 
   // parse all the statements in the program
@@ -60,7 +60,7 @@ void statement(Parser *parser){
   // PRINT (expression | string)
   if (check_token(parser, PRINT)){
     printf("************************* \n");
-    printf("      STATEMENT PRINT \n");
+    printf("      STATEMENT PRINT     \n");
     printf("************************* \n");
 
     next_token(parser);
@@ -68,22 +68,22 @@ void statement(Parser *parser){
     if (check_token(parser, STRING)){
       next_token(parser);
     }
-    else {
-      expression(parser);
-    }
+    // else {
+      // expression(parser);
+    // }
   }
 
   // newline
   nl(parser);
 }
 
-void expression(Parser *parser) {
+// void expression(Parser *parser) {
   
-}
+// }
 
 void nl(Parser *parser){
   printf("*************************\n");
-  printf("      NEWLINE \n");
+  printf("         NEWLINE         \n");
   printf("*************************\n");
 
   // require at least one newline

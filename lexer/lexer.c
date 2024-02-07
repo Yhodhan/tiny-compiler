@@ -57,6 +57,21 @@ void skip_comment(Lexer* lex){
   }  
 }
 
+char* copy_from_source(int begin, Lexer* lex) {
+  int end = lex->cur_pos;
+  int size = end - begin + 1;
+  char* buffer = tmalloc(sizeof(char) * (size+1));
+  buffer[size] = '\0';
+
+  int j = 0;
+  for(int i = begin; i <= end; i++){
+    buffer[j] = lex->source[i]; 
+    j++;
+  }
+
+  return buffer;
+}
+
 // return the next token
 Token get_token(Lexer* lex) {
   skip_white_space(lex);
@@ -138,30 +153,20 @@ Token get_token(Lexer* lex) {
       int begin = lex->cur_pos;
 
       while (lex->cur_char != '\"') {
-        if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%') {
+        if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%'){
           aborted(lex, "Illegal character");
         }
         next_char(lex);
       }
 
       // extract string text from source 
-      int end = lex->cur_pos;
-      int size = end - begin;
-      char* buffer = malloc(sizeof(char) * size+1);  
-      buffer[size] = '\0';      
-
-      int j = 0;
-      for(int i = begin; i < end; i++){
-         buffer[j] = lex->source[i]; 
-        j++;
-      }
+      char* buffer = copy_from_source(begin, lex);
 
       token = new_token(buffer, STRING);      
-      free(buffer);
     break;
       
     default:
-      if (isdigit(ch[0])) {
+      if (isdigit(ch[0])){
          int begin = lex->cur_pos;
 
          while (isdigit(peek(lex))){
@@ -180,19 +185,8 @@ Token get_token(Lexer* lex) {
            }
          }
 
-         int end = lex->cur_pos;
-         int size = end - begin + 1;
-         char* buffer = malloc(sizeof(char) * size+1);  
-         buffer[size] = '\0';      
-
-         int j = 0;
-         for(int i = begin; i <= end; i++){
-            buffer[j] = lex->source[i]; 
-           j++;
-         }
-
-         token = new_token(buffer, NUMBER);      
-         free(buffer);
+        char* buffer = copy_from_source(begin, lex);  
+        token = new_token(buffer, NUMBER);      
       }
       else if (isalpha(ch[0])) {
         int begin = lex->cur_pos;
@@ -201,18 +195,7 @@ Token get_token(Lexer* lex) {
           next_char(lex);
         }
 
-        int end = lex->cur_pos;
-        int size = end - begin + 1;
-        
-        char* buffer = malloc(sizeof(char) * (size+1));  
-        buffer[size] = '\0';      
-
-        int j = 0;
-        for(int i = begin; i <= end; i++){
-           buffer[j] = lex->source[i]; 
-          j++;
-        }
-
+        char* buffer = copy_from_source(begin, lex);
         int key = check_if_keyword(buffer);
         
         if (!key) {
@@ -221,7 +204,6 @@ Token get_token(Lexer* lex) {
         else {
           token = new_token(buffer, key);      
         }
-        free(buffer);
       }
       else
        aborted(lex, ch);
@@ -230,6 +212,5 @@ Token get_token(Lexer* lex) {
   next_char(lex);
   return token;
 }
-
 
 

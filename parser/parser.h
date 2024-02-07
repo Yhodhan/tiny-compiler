@@ -13,7 +13,7 @@ struct Parser {
 typedef struct Parser Parser;
 
 Parser init_parser(Lexer lex);
-void parser_aborted(Parser *parser);
+void parser_aborted();
 void match(Parser *parser, enum TokenType kind);
 int check_peek(Parser *parser, enum TokenType kind);
 int check_token(Parser *parser, enum TokenType kind);

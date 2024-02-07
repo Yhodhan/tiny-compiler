@@ -4,6 +4,7 @@
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
+#include "../mem_tracker/mem_tracker.h"
 
 enum TokenType {
 	NEWLINE = 0,

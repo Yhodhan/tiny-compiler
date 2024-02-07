@@ -1,7 +1,7 @@
-#include "lexer/lexer.h"
-#include "parser/parser.h"
-#include "token/token.h"
 #include <stdio.h>
+#include "lexer/lexer.h"
+#include "mem_tracker/mem_tracker.h"
+#include "parser/parser.h"
 
 // calculates file size without considering last EOF character
 unsigned int file_size(FILE* fptr) {
@@ -36,7 +36,7 @@ Lexer init_lexer(char* path) {
 
   // create lexer and copy source code
   Lexer lex = new_lex(size);
-  lex.source  = malloc(sizeof(char)*(size+1));  
+  lex.source  = tmalloc(sizeof(char)*(size+1));  
   read_file(fptr, &lex);
 
   // close file descriptor
@@ -58,6 +58,7 @@ int main(int argc, char* argv[]){
   Parser parser = init_parser(lexer); 
 
   program(&parser);
+  tfree();
   printf("Parsing completed\n");
     
   return 0;

@@ -1,5 +1,7 @@
+CFLAGS = -g -Wall -Werror -Wextra -Wuninitialized -Winit-self -Wmaybe-uninitialized
+
 compile:
-	gcc -g -Werror -W -o compiler $(shell find . -name  '*.c') 
+	gcc $(CFLAGS) -o compiler $(shell find . -name  '*.c') 
 
 run: 
 	./compiler test/case2.pcc

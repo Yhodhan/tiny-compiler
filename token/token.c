@@ -1,5 +1,4 @@
 #include "token.h"
-#include <string.h>
 
 int check_if_keyword(char* str) {
   if (!strcmp(str, "LABEL")) {
@@ -40,8 +39,8 @@ int check_if_keyword(char* str) {
 }
 
 int token_text_size(char* txt) {
-   int i = 0;
-   while (txt[i] != '\0') {
+  int i = 0;
+  while (txt[i] != '\0') {
     i++;
   } 
   return i;
@@ -55,7 +54,7 @@ Token new_token(char* ch, enum TokenType type){
   Token token;
   int size = token_text_size(ch);
 
-  token.text = malloc(sizeof(char) * size+1);
+  token.text = tmalloc(sizeof(char) * size+1);
   for(int i = 0; i < size; i++){
     token.text[i] = ch[i];
   }
