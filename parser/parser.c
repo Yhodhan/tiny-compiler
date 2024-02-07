@@ -28,7 +28,7 @@ int check_token(Parser *parser, enum TokenType kind){
 
 void match(Parser *parser, enum TokenType kind){
   if (!check_token(parser, kind)){
-    parser_aborted(parser);
+    parser_aborted();
   }
 }
 

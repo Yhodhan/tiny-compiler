@@ -31,7 +31,7 @@ Lexer init_lexer(char* path) {
   rewind(fptr);
 
   // create lexer and copy source code
-  Lexer lex = new_lex(size);
+  Lexer lex = new_lexer(size);
   lex.source  = tmalloc(sizeof(char)*(size+1));  
   read_file(fptr, &lex);
 
@@ -40,7 +40,7 @@ Lexer init_lexer(char* path) {
   return lex;
 }
 
-Lexer new_lex(unsigned int size){
+Lexer new_lexer(unsigned int size){
   Lexer lex = {
   .cur_pos = -1,
   .cur_char = ' ',
@@ -51,9 +51,8 @@ Lexer new_lex(unsigned int size){
   return lex;
 }
 
-void delete_lex(Lexer* lex){
-  free(lex->source);
-  lex->source = NULL;
+void delete_lexer(){
+  tfree();
 }
  // process next character
 void next_char(Lexer* lex) {
@@ -73,8 +72,8 @@ char peek(Lexer* lex){
 }
 
 // invalid token found, print error message and exit
-void aborted(Lexer* lex, char* ch){
-  delete_lex(lex);
+void lexer_aborted(char* ch){
+  delete_lexer();
   printf("unknown token %s \n", ch);
   exit(1);
 }
@@ -184,7 +183,7 @@ Token get_token(Lexer* lex) {
         token = new_token("!=", NOTEQ);
       }
       else {
-        aborted(lex, "unknown character");
+        lexer_aborted("unknown character");
       }
     break;
 
@@ -195,7 +194,7 @@ Token get_token(Lexer* lex) {
 
       while (lex->cur_char != '\"') {
         if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%'){
-          aborted(lex, "Illegal character");
+          lexer_aborted("Illegal character");
         }
         next_char(lex);
       }
@@ -218,7 +217,7 @@ Token get_token(Lexer* lex) {
            next_char(lex);
 
            if (!isdigit(peek(lex))){
-             aborted(lex, "Illegal character in number");
+             lexer_aborted("Illegal character in number");
            }
            
            while (isdigit(peek(lex))){
@@ -247,7 +246,7 @@ Token get_token(Lexer* lex) {
         }
       }
       else
-       aborted(lex, ch);
+       lexer_aborted(ch);
   };
 
   next_char(lex);

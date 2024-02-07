@@ -20,9 +20,9 @@ void next_char(Lexer* lex);
 void aborted(Lexer*lex, char* ch);
 void skip_white_space(Lexer* lex);
 void skip_comment(Lexer* lex);
-void delete_lex(Lexer* lex);
+void delete_lexer();
 Token get_token(Lexer* lex);
-Lexer new_lex(unsigned int size);
+Lexer new_lexer(unsigned int size);
 char* copy_from_source(int begin, Lexer* lex); 
 Lexer init_lexer(char* path); 
 
