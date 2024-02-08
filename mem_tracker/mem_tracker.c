@@ -27,7 +27,6 @@ void* tmalloc(unsigned int size) {
     list.head->ptr = alloc_mem;
   } 
   else {
-
     new_node->next = list.head;
     new_node->ptr = alloc_mem;
     list.head = new_node;
@@ -51,4 +50,6 @@ void tfree() {
 
   free(n->ptr);
   free(n);
+
+  initialized = 0;
 }

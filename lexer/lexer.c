@@ -1,4 +1,5 @@
 #include "lexer.h"
+#include <stdio.h>
 
 unsigned int file_size(FILE* fptr) {
    char ch;
@@ -7,6 +8,8 @@ unsigned int file_size(FILE* fptr) {
      ch = fgetc(fptr);
      size++;
    } while(ch != EOF);
+   
+  size++;
 
    return size;
 }
@@ -20,7 +23,7 @@ void read_file(FILE* fptr, Lexer* lex){
     i++;
   } while(ch != EOF);
 
-  lex->source[i-1] = '\0';
+  lex->source[i] = '\0';
 }
 
 Lexer init_lexer(char* path) {
@@ -201,7 +204,6 @@ Token get_token(Lexer* lex) {
 
       // extract string text from source 
       char* buffer = copy_from_source(begin, lex);
-
       token = new_token(buffer, STRING);      
     break;
       

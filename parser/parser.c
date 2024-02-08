@@ -56,7 +56,6 @@ void program(Parser *parser){
 
 void statement(Parser *parser){
   // check what kind of statement is 
-
   // PRINT (expression | string)
   if (check_token(parser, PRINT)){
     printf("************************* \n");
