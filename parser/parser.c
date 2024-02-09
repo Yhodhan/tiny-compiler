@@ -40,7 +40,7 @@ void next_token(Parser *parser){
 void parser_aborted(){
   printf("Error processing tokens \n");
   tfree();
-  exit(1);
+  exit(EXIT_FAILURE);
 }
 
 void program(Parser *parser){

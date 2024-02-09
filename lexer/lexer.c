@@ -1,5 +1,6 @@
 #include "lexer.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 unsigned int file_size(FILE* fptr) {
    char ch;
@@ -78,7 +79,7 @@ char peek(Lexer* lex){
 void lexer_aborted(char* ch){
   delete_lexer();
   printf("unknown token %s \n", ch);
-  exit(1);
+  exit(EXIT_FAILURE);
 }
 
 // skip whitespace execpt newlines

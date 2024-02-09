@@ -11,7 +11,7 @@ int main(int argc, char* argv[]){
 
   if (argc < 1){
     printf("Error: Compiler needs source file as argument");
-    exit(1);
+    exit(EXIT_FAILURE);
   }
 
   Lexer lexer = init_lexer(argv[1]);
