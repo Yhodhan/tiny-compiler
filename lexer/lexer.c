@@ -10,9 +10,7 @@ unsigned int file_size(FILE* fptr) {
      size++;
    } while(ch != EOF);
    
-  size++;
-
-   return size;
+   return size-1;
 }
 
 void read_file(FILE* fptr, Lexer* lex){
@@ -24,7 +22,8 @@ void read_file(FILE* fptr, Lexer* lex){
     i++;
   } while(ch != EOF);
 
-  lex->source[i] = '\0';
+  // end of file doesn't count as part of the file thus i-1
+  lex->source[i-1] = '\0';
 }
 
 Lexer init_lexer(char* path) {
@@ -61,10 +60,10 @@ void delete_lexer(){
  // process next character
 void next_char(Lexer* lex) {
   lex->cur_pos++;
-  if (lex->cur_pos >= lex->source_size){
+  if (lex->cur_pos >= lex->source_size)
     lex->cur_char = '\0'; // EOF
-  }  
-  lex->cur_char = lex->source[lex->cur_pos];
+  else 
+    lex->cur_char = lex->source[lex->cur_pos];
 }
 
 // return the loookhead character
