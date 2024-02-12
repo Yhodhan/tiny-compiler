@@ -54,6 +54,11 @@ void program(Parser *parser){
   printf("         PROGRAM          \n");
   printf("************************* \n");
 
+  // there maybe newlines at the begining 
+  while(!check_token(parser, NEWLINE)){
+    next_token(parser);
+  }
+
   // parse all the statements in the program
   while (!check_token(parser, EOF)) {
     statement(parser);

@@ -15,7 +15,7 @@ unsigned int file_size(FILE* fptr) {
 
 void read_file(FILE* fptr, Lexer* lex){
   char ch;
-  int i = 0;
+  unsigned int i = 0;
   do {
     ch = fgetc(fptr);
     lex->source[i] = ch;
