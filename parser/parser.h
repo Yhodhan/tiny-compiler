@@ -22,5 +22,6 @@ void statement(Parser *parser);
 void expression(Parser *parser);
 void program(Parser *parser);
 void nl(Parser *parser);
+void comparison();
 
 #endif

@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <stdio.h>
 
 Parser init_parser(Lexer lex){
   Token token = {
@@ -30,6 +31,7 @@ void match(Parser *parser, enum TokenType kind){
   if (!check_token(parser, kind)){
     parser_aborted();
   }
+  next_token(parser);
 }
 
 void next_token(Parser *parser){
@@ -42,6 +44,10 @@ void parser_aborted(){
   tfree();
   exit(EXIT_FAILURE);
 }
+
+// --------------------------
+//      grammar functions 
+// --------------------------
 
 void program(Parser *parser){
   printf("************************* \n");
@@ -67,9 +73,67 @@ void statement(Parser *parser){
     if (check_token(parser, STRING)){
       next_token(parser);
     }
+
     // else {
       // expression(parser);
     // }
+  }
+
+  else if (check_token(parser, IF)){
+    printf("    STATEMENT-IF \n");
+    next_token(parser);
+    comparison();
+    match(parser, THEN);
+    nl(parser);
+    // Zero or more statements in the body
+    while (!check_token(parser, ENDIF)){
+      statement(parser);
+    }
+    match(parser, ENDIF);
+  }
+
+  else if (check_token(parser, WHILE)){
+    printf("    STATEMENT-WHILE \n");
+    next_token(parser);
+    comparison();
+    match(parser, REPEAT);
+    nl(parser);
+    // Zero or more statements in the body
+    while (!check_token(parser, ENDWHILE)){
+      statement(parser);
+    }
+    match(parser, ENDWHILE);
+  }
+
+  else if (check_token(parser, LABEL)){
+    printf("    STATEMENT-LABEL \n");
+    next_token(parser);
+    match(parser, IDENT);
+  }
+
+  else if (check_token(parser, GOTO)){
+    printf("    STATEMENT-GOTO \n");
+    next_token(parser);
+    match(parser, IDENT);
+  }
+
+  else if (check_token(parser, LET)){
+    printf("    STATEMENT-LET \n");
+    next_token(parser);
+    match(parser, IDENT);
+    match(parser, EQ);
+    // expression(parser);
+  }
+
+  else if (check_token(parser, INPUT)){
+    printf("    STATEMENT-INPUT \n");
+    next_token(parser);
+    match(parser, IDENT);
+  }
+
+  else {
+    printf("Invalid statement at %s (%d) \n", parser->current_token.text, parser->current_token.type);
+    parser_aborted();
   }
 
   // newline
@@ -90,4 +154,11 @@ void nl(Parser *parser){
   while (check_token(parser, NEWLINE)){
     next_token(parser);
   }
+}
+
+// --------------------------
+//      helper functions
+// --------------------------
+
+void comparison(){
 }

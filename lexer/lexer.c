@@ -8,7 +8,7 @@ unsigned int file_size(FILE* fptr) {
    do {
      ch = fgetc(fptr);
      size++;
-   } while(ch != EOF);
+   } while (ch != EOF);
    
    return size-1;
 }
@@ -20,7 +20,7 @@ void read_file(FILE* fptr, Lexer* lex){
     ch = fgetc(fptr);
     lex->source[i] = ch;
     i++;
-  } while(ch != EOF);
+  } while (ch != EOF);
 
   // end of file doesn't count as part of the file thus i-1
   lex->source[i-1] = '\0';
@@ -84,7 +84,7 @@ void lexer_aborted(char* ch){
 // skip whitespace execpt newlines
 void skip_white_space(Lexer* lex){
   char ch = lex->cur_char;
-  while(ch == ' ' || ch == '\t' || ch == '\r') {
+  while (ch == ' ' || ch == '\t' || ch == '\r'){
     next_char(lex);
     ch = lex->cur_char;
   }
@@ -93,7 +93,7 @@ void skip_white_space(Lexer* lex){
 // skip comments in the code
 void skip_comment(Lexer* lex){
   if (lex->cur_char == '#'){
-    while (lex->cur_char != '\n') {
+    while (lex->cur_char != '\n'){
       next_char(lex);
     }
   }  
@@ -195,7 +195,7 @@ Token get_token(Lexer* lex) {
       next_char(lex);
       int begin = lex->cur_pos;
 
-      while (lex->cur_char != '\"') {
+      while (lex->cur_char != '\"'){
         if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%'){
           lexer_aborted("Illegal character");
         }
@@ -230,10 +230,10 @@ Token get_token(Lexer* lex) {
         char* buffer = copy_from_source(begin, lex);  
         token = new_token(buffer, NUMBER);      
       }
-      else if (isalpha(ch[0])) {
+      else if (isalpha(ch[0])){
         int begin = lex->cur_pos;
 
-        while(isalnum(peek(lex))) {
+        while (isalnum(peek(lex))) {
           next_char(lex);
         }
 
