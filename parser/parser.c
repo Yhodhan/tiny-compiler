@@ -50,14 +50,7 @@ void parser_aborted(){
 // --------------------------
 
 void program(Parser *parser){
-  printf("************************* \n");
-  printf("         PROGRAM          \n");
-  printf("************************* \n");
-
-  // there maybe newlines at the begining 
-  while(!check_token(parser, NEWLINE)){
-    next_token(parser);
-  }
+  printf("    PROGRAM \n");
 
   // parse all the statements in the program
   while (!check_token(parser, EOF)) {
@@ -66,28 +59,24 @@ void program(Parser *parser){
 }
 
 void statement(Parser *parser){
-  // check what kind of statement is 
   // PRINT (expression | string)
   if (check_token(parser, PRINT)){
-    printf("************************* \n");
-    printf("      STATEMENT PRINT     \n");
-    printf("************************* \n");
+    printf("    STATEMENT PRINT \n");
 
     next_token(parser);
 
     if (check_token(parser, STRING)){
       next_token(parser);
     }
-
-    // else {
-      // expression(parser);
-    // }
+    else {
+      expression(parser);
+    }
   }
 
   else if (check_token(parser, IF)){
     printf("    STATEMENT-IF \n");
     next_token(parser);
-    comparison();
+    comparison(parser);
     match(parser, THEN);
     nl(parser);
     // Zero or more statements in the body
@@ -100,7 +89,7 @@ void statement(Parser *parser){
   else if (check_token(parser, WHILE)){
     printf("    STATEMENT-WHILE \n");
     next_token(parser);
-    comparison();
+    comparison(parser);
     match(parser, REPEAT);
     nl(parser);
     // Zero or more statements in the body
@@ -127,7 +116,7 @@ void statement(Parser *parser){
     next_token(parser);
     match(parser, IDENT);
     match(parser, EQ);
-    // expression(parser);
+    expression(parser);
   }
 
   else if (check_token(parser, INPUT)){
@@ -140,20 +129,59 @@ void statement(Parser *parser){
     printf("Invalid statement at %s (%d) \n", parser->current_token.text, parser->current_token.type);
     parser_aborted();
   }
-
   // newline
   nl(parser);
 }
 
-// void expression(Parser *parser) {
-  
-// }
+// expression ::= term {( "-" | "+" ) term}
+void expression(Parser *parser) {
+  printf("    EXPRESSION \n");
+
+  term(parser);
+  // can have 0 or more +/- and expressions
+  while (check_token(parser, PLUS) || check_token(parser, MINUS)){
+    next_token(parser);
+    term(parser);
+  }
+}
+
+// term ::= unary {( "/" | "*" ) unary}
+void term(Parser* parser){
+    printf("    TERM\n");
+    unary(parser);
+    while (check_token(parser, ASTERISK) || check_token(parser, SLASH)){
+      next_token(parser);
+      unary(parser);
+    }
+}
+
+// unary ::= ["+" | "-"] primary
+void unary(Parser* parser){
+  printf("    UNARY\n");
+  if (check_token(parser, PLUS) || check_token(parser, MINUS)){
+    next_token(parser);
+  }
+  primary(parser);
+}
+
+// primary ::= number | ident
+void primary(Parser* parser){
+  printf("    PRIMARY ( %s )\n", parser->current_token.text); 
+  // can have 0 or more +/- and expressions
+  if (check_token(parser, NUMBER)){
+    next_token(parser);
+  }
+  else if (check_token(parser, IDENT)){
+    next_token(parser);
+  }
+  else {
+    printf("Unexpected token at %s", parser->current_token.text);
+    parser_aborted();
+  }
+}
 
 void nl(Parser *parser){
-  printf("*************************\n");
-  printf("         NEWLINE         \n");
-  printf("*************************\n");
-
+  printf("    NEWLINE \n");
   // require at least one newline
   match(parser, NEWLINE);
   while (check_token(parser, NEWLINE)){
@@ -161,9 +189,36 @@ void nl(Parser *parser){
   }
 }
 
+void comparison(Parser *parser){
+  printf("    COMPARISON \n");
+  expression(parser);
+  // must be at least one comparison operator and another expression 
+  if (is_comparison_operator(parser)) {
+    next_token(parser);
+    expression(parser);
+  }
+  else {
+    printf("Expected comparison operator at %s (%d) \n", parser->current_token.text, parser->current_token.type);
+    parser_aborted();
+  }
+
+  // can have 0 or more comparison operator and expressions
+  while (is_comparison_operator(parser)){
+    next_token(parser);
+    expression(parser);
+  }
+}
+
 // --------------------------
 //      helper functions
 // --------------------------
 
-void comparison(){
+int is_comparison_operator(Parser* parser){
+  return check_token(parser, LT)   || 
+         check_token(parser, GT)   ||
+         check_token(parser, LTEQ) || 
+         check_token(parser, GTEQ) ||
+         check_token(parser, EQEQ) ||
+         check_token(parser, NOTEQ);
 }
+
