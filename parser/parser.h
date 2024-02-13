@@ -8,6 +8,9 @@ struct Parser {
   Lexer lexer;
   Token current_token; 
   Token peek_token;
+  Set symbols;
+  Set labels_declared;
+  Set labels_gotoed;
 };
 
 typedef struct Parser Parser;

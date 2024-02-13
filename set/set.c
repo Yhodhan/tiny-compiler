@@ -39,11 +39,10 @@ void add(Set* set, char* elem){
     set->arr = realloc(set->arr, sizeof(char*) * set->capacity*2);
     set->capacity = set->capacity*2;
   }
-
   // add element
+  set->size++;
   set->last_elem_index++;
   set->arr[set->last_elem_index] = elem;
-  set->size++;
 }
 
 void print_set(Set* set){

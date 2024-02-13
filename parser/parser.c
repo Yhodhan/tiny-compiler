@@ -11,6 +11,9 @@ Parser init_parser(Lexer lex){
     .lexer = lex,
     .current_token = token,
     .peek_token = token,
+    .symbols = init_set(),
+    .labels_declared = init_set(),
+    .labels_gotoed = init_set(),
   };
 
   next_token(&parser);
@@ -20,7 +23,10 @@ Parser init_parser(Lexer lex){
 }
 
 void delete_parser(Parser* parser){
-  delete_lexer(&parser->lexer);
+  delete_set(&parser->symbols);
+  delete_set(&parser->labels_gotoed);
+  delete_set(&parser->labels_declared);
+  tfree();
 }
 
 int check_peek(Parser *parser, enum TokenType kind){
@@ -44,8 +50,8 @@ void next_token(Parser *parser){
 }
 
 void parser_aborted(Parser* parser){
+  delete_parser(parser);
   printf("Error processing tokens \n");
-  delete_lexer(&parser->lexer);
   exit(EXIT_FAILURE);
 }
 
@@ -59,6 +65,13 @@ void program(Parser *parser){
   // parse all the statements in the program
   while (!check_token(parser, EOF)) {
     statement(parser);
+  }
+
+  for(unsigned int i = 0; i < parser->labels_gotoed.size; i++){
+    if (!exists(&parser->labels_declared, parser->labels_gotoed.arr[i])){
+        printf("Attend to GOTO to undeclared label: %s \n", parser->labels_gotoed.arr[i]);
+        parser_aborted(parser);
+    }  
   }
 }
 
@@ -106,18 +119,32 @@ void statement(Parser *parser){
   else if (check_token(parser, LABEL)){
     printf("    STATEMENT-LABEL \n");
     next_token(parser);
+
+    // check if label already exists
+    if (exists(&parser->labels_declared, parser->current_token.text)){
+      printf("Label already exists: %s \n", parser->current_token.text);
+      parser_aborted(parser);
+    }
+    add(&parser->labels_declared, parser->current_token.text);
+    
     match(parser, IDENT);
   }
 
   else if (check_token(parser, GOTO)){
     printf("    STATEMENT-GOTO \n");
     next_token(parser);
+    add(&parser->labels_gotoed, parser->current_token.text);
     match(parser, IDENT);
   }
 
   else if (check_token(parser, LET)){
     printf("    STATEMENT-LET \n");
     next_token(parser);
+
+    if (!exists(&parser->symbols, parser->current_token.text)){
+      add(&parser->symbols, parser->current_token.text);
+    }
+    
     match(parser, IDENT);
     match(parser, EQ);
     expression(parser);
@@ -126,11 +153,15 @@ void statement(Parser *parser){
   else if (check_token(parser, INPUT)){
     printf("    STATEMENT-INPUT \n");
     next_token(parser);
+
+    if (!exists(&parser->symbols, parser->current_token.text)){
+      add(&parser->symbols, parser->current_token.text);
+    }
+  
     match(parser, IDENT);
   }
-
   else {
-    printf("Invalid statement at %s (%d) \n", parser->current_token.text, parser->current_token.type);
+    printf("Invalid statement at %s: (%d) \n", parser->current_token.text, parser->current_token.type);
     parser_aborted(parser);
   }
   // newline
@@ -176,6 +207,11 @@ void primary(Parser* parser){
     next_token(parser);
   }
   else if (check_token(parser, IDENT)){
+    // ensure the variable already exists
+    if (!exists(&parser->symbols, parser->current_token.text)){
+      printf("Referencing variable before assigment: %s \n", parser->current_token.text);
+      parser_aborted(parser);
+    }
     next_token(parser);
   }
   else {
@@ -202,7 +238,7 @@ void comparison(Parser *parser){
     expression(parser);
   }
   else {
-    printf("Expected comparison operator at %s (%d) \n", parser->current_token.text, parser->current_token.type);
+    printf("Expected comparison operator at: %s (%d) \n", parser->current_token.text, parser->current_token.type);
     parser_aborted(parser);
   }
 

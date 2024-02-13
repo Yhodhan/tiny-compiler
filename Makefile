@@ -4,13 +4,13 @@ compile:
 	gcc $(CFLAGS) -o compiler $(shell find . -name  '*.c') 
 
 run: 
-	./compiler test/case2.pcc
+	./compiler test/case.pcc
 
 valgrind:
-	valgrind ./compiler test/case2.pcc
+	valgrind ./compiler test/case.pcc
 
 debug:
-	gdb --args ./compiler test/case2.pcc
+	gdb --args ./compiler test/case.pcc
 	
 clean:
 	rm compiler 
