@@ -12,7 +12,6 @@ struct Parser {
 
 typedef struct Parser Parser;
 
-void parser_aborted();
 void nl(Parser *parser);
 void term(Parser* parser);
 void unary(Parser* parser);
@@ -24,6 +23,8 @@ void next_token(Parser *parser);
 void expression(Parser *parser);
 void comparison(Parser* parser);
 void expression(Parser *parser); 
+void delete_parser(Parser* parser);
+void parser_aborted(Parser* parser);
 int is_comparison_operator(Parser* parser);
 void match(Parser *parser, enum TokenType kind);
 int check_peek(Parser *parser, enum TokenType kind);

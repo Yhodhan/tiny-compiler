@@ -1,6 +1,4 @@
 #include "lexer.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 unsigned int file_size(FILE* fptr) {
    char ch;
@@ -48,13 +46,19 @@ Lexer new_lexer(unsigned int size){
   .cur_pos = -1,
   .cur_char = ' ',
   .source_size = size,
-  .source = NULL
+  .source = NULL,
+  .symbols = init_set(),
+  .LabelsDeclared = init_set(),
+  .LabelsGotoed = init_set(),
   };
 
   return lex;
 }
 
-void delete_lexer(){
+void delete_lexer(Lexer* lex){
+  delete_set(&lex->symbols);
+  delete_set(&lex->LabelsDeclared);
+  delete_set(&lex->LabelsGotoed);
   tfree();
 }
  // process next character
@@ -75,8 +79,8 @@ char peek(Lexer* lex){
 }
 
 // invalid token found, print error message and exit
-void lexer_aborted(char* ch){
-  delete_lexer();
+void lexer_aborted(Lexer* lex, char* ch){
+  delete_lexer(lex);
   printf("unknown token %s \n", ch);
   exit(EXIT_FAILURE);
 }
@@ -186,7 +190,7 @@ Token get_token(Lexer* lex) {
         token = new_token("!=", NOTEQ);
       }
       else {
-        lexer_aborted("unknown character");
+        lexer_aborted(lex, "unknown character");
       }
     break;
 
@@ -197,7 +201,7 @@ Token get_token(Lexer* lex) {
 
       while (lex->cur_char != '\"'){
         if (lex->cur_char == '\r' || lex->cur_char == '\n' || lex->cur_char == '\t' || lex->cur_char == '\\' || lex->cur_char == '\%'){
-          lexer_aborted("Illegal character");
+          lexer_aborted(lex, "Illegal character");
         }
         next_char(lex);
       }
@@ -219,7 +223,7 @@ Token get_token(Lexer* lex) {
            next_char(lex);
 
            if (!isdigit(peek(lex))){
-             lexer_aborted("Illegal character in number");
+             lexer_aborted(lex, "Illegal character in number");
            }
            
            while (isdigit(peek(lex))){
@@ -248,7 +252,7 @@ Token get_token(Lexer* lex) {
         }
       }
       else
-       lexer_aborted(ch);
+       lexer_aborted(lex, ch);
   };
 
   next_char(lex);

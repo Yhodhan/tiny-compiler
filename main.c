@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "lexer/lexer.h"
-#include "mem_tracker/mem_tracker.h"
 #include "parser/parser.h"
 
 
@@ -18,7 +17,7 @@ int main(int argc, char* argv[]){
   Parser parser = init_parser(lexer); 
 
   program(&parser);
-  tfree();
+  delete_parser(&parser);  
   printf("Parsing completed\n");
     
   return 0;

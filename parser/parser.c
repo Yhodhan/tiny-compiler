@@ -19,6 +19,10 @@ Parser init_parser(Lexer lex){
   return parser;
 }
 
+void delete_parser(Parser* parser){
+  delete_lexer(&parser->lexer);
+}
+
 int check_peek(Parser *parser, enum TokenType kind){
   return kind == parser->peek_token.type;
 }
@@ -29,7 +33,7 @@ int check_token(Parser *parser, enum TokenType kind){
 
 void match(Parser *parser, enum TokenType kind){
   if (!check_token(parser, kind)){
-    parser_aborted();
+    parser_aborted(parser);
   }
   next_token(parser);
 }
@@ -39,9 +43,9 @@ void next_token(Parser *parser){
   parser->peek_token = get_token(&parser->lexer);
 }
 
-void parser_aborted(){
+void parser_aborted(Parser* parser){
   printf("Error processing tokens \n");
-  tfree();
+  delete_lexer(&parser->lexer);
   exit(EXIT_FAILURE);
 }
 
@@ -127,7 +131,7 @@ void statement(Parser *parser){
 
   else {
     printf("Invalid statement at %s (%d) \n", parser->current_token.text, parser->current_token.type);
-    parser_aborted();
+    parser_aborted(parser);
   }
   // newline
   nl(parser);
@@ -176,7 +180,7 @@ void primary(Parser* parser){
   }
   else {
     printf("Unexpected token at %s", parser->current_token.text);
-    parser_aborted();
+    parser_aborted(parser);
   }
 }
 
@@ -199,7 +203,7 @@ void comparison(Parser *parser){
   }
   else {
     printf("Expected comparison operator at %s (%d) \n", parser->current_token.text, parser->current_token.type);
-    parser_aborted();
+    parser_aborted(parser);
   }
 
   // can have 0 or more comparison operator and expressions
