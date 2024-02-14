@@ -47,9 +47,6 @@ Lexer new_lexer(unsigned int size){
   .cur_char = ' ',
   .source_size = size,
   .source = NULL,
-  .symbols = init_set(),
-  .LabelsDeclared = init_set(),
-  .LabelsGotoed = init_set(),
   };
 
   return lex;

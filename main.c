@@ -2,7 +2,6 @@
 #include "lexer/lexer.h"
 #include "parser/parser.h"
 
-
 int main(int argc, char* argv[]){
   printf("*************************\n");
   printf("    compiler initiates   \n");
