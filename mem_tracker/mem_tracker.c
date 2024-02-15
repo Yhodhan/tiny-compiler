@@ -35,7 +35,7 @@ void* umalloc(unsigned int size) {
   return alloc_mem;
 }
 
-void tfree() {
+void ufree() {
   if (list.head == NULL) {
     return;
   }

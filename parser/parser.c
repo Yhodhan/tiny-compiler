@@ -25,7 +25,7 @@ void delete_parser(Parser* parser){
   delete_set(&parser->symbols);
   delete_set(&parser->labels_gotoed);
   delete_set(&parser->labels_declared);
-  tfree();
+  ufree();
 }
 
 int check_peek(Parser *parser, enum TokenType kind){

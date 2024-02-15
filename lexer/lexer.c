@@ -72,6 +72,7 @@ char peek(Lexer* lex){
 // invalid token found, print error message and exit
 void lexer_aborted(char* ch){
   printf("unknown token %s \n", ch);
+  ufree();
   exit(EXIT_FAILURE);
 }
 

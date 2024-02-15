@@ -16,7 +16,7 @@ struct ListTracker {
   Node* head;
 };
 
-void tfree();
+void  ufree();
 void* umalloc(unsigned int size); 
 
 #endif
