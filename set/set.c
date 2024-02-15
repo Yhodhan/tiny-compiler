@@ -36,8 +36,8 @@ void add(Set* set, char* elem){
     return;
   }
   if (set->size >= set->capacity){
-    set->arr = realloc(set->arr, sizeof(char*) * set->capacity*2);
     set->capacity = set->capacity*2;
+    set->arr = realloc(set->arr, sizeof(char*) * set->capacity);
   }
   // add element
   set->size++;

@@ -1,5 +1,4 @@
 #include "parser.h"
-#include <stdio.h>
 
 Parser init_parser(Lexer lex){
   Token token = {
@@ -160,6 +159,7 @@ void statement(Parser *parser){
   
     match(parser, IDENT);
   }
+
   else {
     printf("Invalid statement at %s: (%d) \n", parser->current_token.text, parser->current_token.type);
     parser_aborted(parser);

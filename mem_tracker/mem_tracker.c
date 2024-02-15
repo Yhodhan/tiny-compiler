@@ -13,7 +13,7 @@ ListTracker init() {
   return l;
 }
 
-void* tmalloc(unsigned int size) {
+void* umalloc(unsigned int size) {
   void* alloc_mem = (void*) malloc(size);
   Node* new_node = malloc(sizeof(Node));
 

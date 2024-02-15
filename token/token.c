@@ -54,7 +54,7 @@ Token new_token(char* ch, enum TokenType type){
   Token token;
   int size = token_text_size(ch);
 
-  token.text = tmalloc(sizeof(char) * size+1);
+  token.text = umalloc(sizeof(char) * size+1);
   for(int i = 0; i < size; i++){
     token.text[i] = ch[i];
   }

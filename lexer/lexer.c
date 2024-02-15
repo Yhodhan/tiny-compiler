@@ -33,7 +33,7 @@ Lexer init_lexer(char* path) {
 
   // create lexer and copy source code
   Lexer lex = new_lexer(size);
-  lex.source  = tmalloc(sizeof(char)*(size+1));  
+  lex.source  = umalloc(sizeof(char)*(size+1));  
   read_file(fptr, &lex);
 
   // close file descriptor
@@ -97,7 +97,7 @@ void skip_comment(Lexer* lex){
 char* copy_from_source(int begin, Lexer* lex) {
   int end = lex->cur_pos;
   int size = end - begin + 1;
-  char* buffer = tmalloc(sizeof(char) * (size+1));
+  char* buffer = umalloc(sizeof(char) * (size+1));
   buffer[size] = '\0';
 
   int j = 0;

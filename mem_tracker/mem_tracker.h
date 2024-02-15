@@ -17,6 +17,6 @@ struct ListTracker {
 };
 
 void tfree();
-void* tmalloc(unsigned int size); 
+void* umalloc(unsigned int size); 
 
 #endif
