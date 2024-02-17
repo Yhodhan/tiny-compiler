@@ -51,4 +51,5 @@ typedef struct Token Token;
 Token new_token(char* ch, enum TokenType type);
 void delete_token(Token t);
 int check_if_keyword(char* str);
+
 #endif

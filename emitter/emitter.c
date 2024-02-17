@@ -16,11 +16,10 @@ Emitter init_emitter(char* full_path){
 
 char* concat(char* dst, char* src){
   // one additional space for ' ' and other for null character
-  int total_size = strlen(dst) + strlen(src) + 2;
+  int total_size = strlen(dst) + strlen(src) + 1;
   char* code = umalloc(sizeof(char) * total_size);
 
   strcpy(code, dst);
-  strcat(code, " ");
   strcat(code, src);
 
   return code;

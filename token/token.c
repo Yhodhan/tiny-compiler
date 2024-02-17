@@ -38,21 +38,13 @@ int check_if_keyword(char* str) {
   return 0;
 }
 
-int token_text_size(char* txt) {
-  int i = 0;
-  while (txt[i] != '\0') {
-    i++;
-  } 
-  return i;
-}
-
 void delete_token(Token t) {
   free(t.text);
 }
 
 Token new_token(char* ch, enum TokenType type){
   Token token;
-  int size = token_text_size(ch);
+  int size = strlen(ch);
 
   token.text = umalloc(sizeof(char) * size+1);
   for(int i = 0; i < size; i++){

@@ -85,11 +85,9 @@ void program(Parser *parser){
 void statement(Parser *parser){
   // PRINT (expression | string)
   if (check_token(parser, PRINT)){
-
     next_token(parser);
 
     if (check_token(parser, STRING)){
-
       char* print = concat("printf(\"", parser->current_token.text);
       char* str   = concat(print, "\\n\");");
 
@@ -97,9 +95,9 @@ void statement(Parser *parser){
       next_token(parser);
     }
     else {
-
       char* print = concat("printf(\"%", ".2f\\n\", (float)(");
       emit(&parser->emitter, print);
+
       expression(parser);
       emit_line(&parser->emitter, "));");
     }
@@ -108,43 +106,50 @@ void statement(Parser *parser){
   else if (check_token(parser, IF)){
     next_token(parser);
     emit(&parser->emitter, "if(");
+
     comparison(parser);
     match(parser, THEN);
+
     nl(parser);
     emit_line(&parser->emitter, "){");
+
     // Zero or more statements in the body
     while (!check_token(parser, ENDIF)){
       statement(parser);
     }
+
     match(parser, ENDIF);
     emit_line(&parser->emitter, "}");
   }
 
   else if (check_token(parser, WHILE)){
     next_token(parser);
+
     emit(&parser->emitter, "while(");
     comparison(parser);
+
     match(parser, REPEAT);
     nl(parser);
+
     emit_line(&parser->emitter, "){");
     // Zero or more statements in the body
     while (!check_token(parser, ENDWHILE)){
       statement(parser);
     }
+
     match(parser, ENDWHILE);
     emit_line(&parser->emitter, "}");
   }
 
   else if (check_token(parser, LABEL)){
     next_token(parser);
-
     // check if label already exists
     if (exists(&parser->labels_declared, parser->current_token.text)){
       printf("Label already exists: %s \n", parser->current_token.text);
       parser_aborted(parser);
     }
-    add(&parser->labels_declared, parser->current_token.text);
 
+    add(&parser->labels_declared, parser->current_token.text);
     char* str = concat(parser->current_token.text, ":");
 
     emit_line(&parser->emitter, str);
@@ -163,29 +168,50 @@ void statement(Parser *parser){
   }
 
   else if (check_token(parser, LET)){
-    printf("    STATEMENT-LET \n");
     next_token(parser);
 
     if (!exists(&parser->symbols, parser->current_token.text)){
       add(&parser->symbols, parser->current_token.text);
+
+      char* str_aux = concat("float ", parser->current_token.text);
+      char* str = concat(str_aux, ";");
+      header_line(&parser->emitter, str);
     }
     
+    char* str = concat(parser->current_token.text, " = ");
+    emit(&parser->emitter, str);
+
     match(parser, IDENT);
     match(parser, EQ);
+
     expression(parser);
+    emit_line(&parser->emitter, ";");
   }
 
   else if (check_token(parser, INPUT)){
-    printf("    STATEMENT-INPUT \n");
     next_token(parser);
 
     if (!exists(&parser->symbols, parser->current_token.text)){
       add(&parser->symbols, parser->current_token.text);
+
+      char* str_aux = concat("float ", parser->current_token.text);
+      char* str = concat(str_aux, ";");
+      header_line(&parser->emitter, str);
     }
-  
+
+    char* str_a = concat("if(0 == scanf(\"%", "f\", &");
+    char* str_b = concat(str_a, parser->current_token.text);
+    char* str   = concat(str_b, ")) {");
+    emit_line(&parser->emitter, str);
+
+    char* str_c = concat(parser->current_token.text, " = 0;");
+    emit_line(&parser->emitter, str_c);
+
+    emit(&parser->emitter, "scanf(\"%");
+    emit_line(&parser->emitter, "*s\");");
+    emit_line(&parser->emitter, "}");
     match(parser, IDENT);
   }
-
   else {
     printf("Invalid statement at %s: (%d) \n", parser->current_token.text, parser->current_token.type);
     parser_aborted(parser);
@@ -196,11 +222,10 @@ void statement(Parser *parser){
 
 // expression ::= term {( "-" | "+" ) term}
 void expression(Parser *parser) {
-  printf("    EXPRESSION \n");
-
   term(parser);
   // can have 0 or more +/- and expressions
   while (check_token(parser, PLUS) || check_token(parser, MINUS)){
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
     term(parser);
   }
@@ -208,9 +233,9 @@ void expression(Parser *parser) {
 
 // term ::= unary {( "/" | "*" ) unary}
 void term(Parser* parser){
-    printf("    TERM\n");
     unary(parser);
     while (check_token(parser, ASTERISK) || check_token(parser, SLASH)){
+      emit(&parser->emitter, parser->current_token.text);
       next_token(parser);
       unary(parser);
     }
@@ -218,8 +243,8 @@ void term(Parser* parser){
 
 // unary ::= ["+" | "-"] primary
 void unary(Parser* parser){
-  printf("    UNARY\n");
   if (check_token(parser, PLUS) || check_token(parser, MINUS)){
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
   }
   primary(parser);
@@ -227,9 +252,9 @@ void unary(Parser* parser){
 
 // primary ::= number | ident
 void primary(Parser* parser){
-  printf("    PRIMARY ( %s )\n", parser->current_token.text); 
   // can have 0 or more +/- and expressions
   if (check_token(parser, NUMBER)){
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
   }
   else if (check_token(parser, IDENT)){
@@ -238,6 +263,7 @@ void primary(Parser* parser){
       printf("Referencing variable before assigment: %s \n", parser->current_token.text);
       parser_aborted(parser);
     }
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
   }
   else {
@@ -247,7 +273,6 @@ void primary(Parser* parser){
 }
 
 void nl(Parser *parser){
-  printf("    NEWLINE \n");
   // require at least one newline
   match(parser, NEWLINE);
   while (check_token(parser, NEWLINE)){
@@ -256,10 +281,10 @@ void nl(Parser *parser){
 }
 
 void comparison(Parser *parser){
-  printf("    COMPARISON \n");
   expression(parser);
   // must be at least one comparison operator and another expression 
   if (is_comparison_operator(parser)) {
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
     expression(parser);
   }
@@ -270,6 +295,7 @@ void comparison(Parser *parser){
 
   // can have 0 or more comparison operator and expressions
   while (is_comparison_operator(parser)){
+    emit(&parser->emitter, parser->current_token.text);
     next_token(parser);
     expression(parser);
   }
