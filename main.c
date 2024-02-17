@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "lexer/lexer.h"
 #include "parser/parser.h"
+#include "emitter/emitter.h"
 
 int main(int argc, char* argv[]){
   printf("*************************\n");
@@ -13,11 +14,12 @@ int main(int argc, char* argv[]){
   }
 
   Lexer lexer = init_lexer(argv[1]);
+  Emitter emitter = init_emitter("test.file");
   Parser parser = init_parser(lexer); 
 
   program(&parser);
-  delete_parser(&parser);  
   printf("Parsing completed\n");
-    
+      
+  delete_parser(&parser);
   return 0;
 }

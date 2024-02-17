@@ -1,4 +1,4 @@
-CFLAGS = -g -Wall -Werror -Wextra -Wuninitialized -Winit-self -Wmaybe-uninitialized
+CFLAGS = -g -Wall -Wformat -Werror -Wextra -Wuninitialized -Winit-self -Wmaybe-uninitialized
 
 compile:
 	gcc $(CFLAGS) -o compiler $(shell find . -name  '*.c') 
