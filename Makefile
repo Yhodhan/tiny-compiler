@@ -14,6 +14,7 @@ debug:
 	
 clean:
 	rm compiler 
+	rm emit.c
 
 
 

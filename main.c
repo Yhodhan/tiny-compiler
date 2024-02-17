@@ -14,12 +14,14 @@ int main(int argc, char* argv[]){
   }
 
   Lexer lexer = init_lexer(argv[1]);
-  Emitter emitter = init_emitter("test.file");
-  Parser parser = init_parser(lexer); 
+  Emitter emitter = init_emitter("emit.c");
+  Parser parser = init_parser(lexer, emitter); 
 
   program(&parser);
   printf("Parsing completed\n");
-      
+
+  write_file(&parser.emitter);
+     
   delete_parser(&parser);
   return 0;
 }

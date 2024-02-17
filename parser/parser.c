@@ -1,6 +1,6 @@
 #include "parser.h"
 
-Parser init_parser(Lexer lex){
+Parser init_parser(Lexer lex, Emitter emitter){
   Token token = {
     .text = NULL,
     .type = NEW,
@@ -8,6 +8,7 @@ Parser init_parser(Lexer lex){
 
   Parser parser = {
     .lexer = lex,
+    .emitter = emitter,
     .current_token = token,
     .peek_token = token,
     .symbols = init_set(),
@@ -59,13 +60,20 @@ void parser_aborted(Parser* parser){
 // --------------------------
 
 void program(Parser *parser){
-  printf("    PROGRAM \n");
+
+  header_line(&parser->emitter, "#include <stdio.h>");
+  header_line(&parser->emitter, "int main(void){");
 
   // parse all the statements in the program
   while (!check_token(parser, EOF)) {
     statement(parser);
   }
 
+  // wrap things up
+  emit_line(&parser->emitter, "return 0;");
+  emit_line(&parser->emitter, "}");
+
+    // check that each label referenced in GOTO is declared
   for(unsigned int i = 0; i < parser->labels_gotoed.size; i++){
     if (!exists(&parser->labels_declared, parser->labels_gotoed.arr[i])){
         printf("Attend to GOTO to undeclared label: %s \n", parser->labels_gotoed.arr[i]);
@@ -77,46 +85,57 @@ void program(Parser *parser){
 void statement(Parser *parser){
   // PRINT (expression | string)
   if (check_token(parser, PRINT)){
-    printf("    STATEMENT PRINT \n");
 
     next_token(parser);
 
     if (check_token(parser, STRING)){
+
+      char* print = concat("printf(\"", parser->current_token.text);
+      char* str   = concat(print, "\\n\");");
+
+      emit_line(&parser->emitter, str);
       next_token(parser);
     }
     else {
+
+      char* print = concat("printf(\"%", ".2f\\n\", (float)(");
+      emit(&parser->emitter, print);
       expression(parser);
+      emit_line(&parser->emitter, "));");
     }
   }
 
   else if (check_token(parser, IF)){
-    printf("    STATEMENT-IF \n");
     next_token(parser);
+    emit(&parser->emitter, "if(");
     comparison(parser);
     match(parser, THEN);
     nl(parser);
+    emit_line(&parser->emitter, "){");
     // Zero or more statements in the body
     while (!check_token(parser, ENDIF)){
       statement(parser);
     }
     match(parser, ENDIF);
+    emit_line(&parser->emitter, "}");
   }
 
   else if (check_token(parser, WHILE)){
-    printf("    STATEMENT-WHILE \n");
     next_token(parser);
+    emit(&parser->emitter, "while(");
     comparison(parser);
     match(parser, REPEAT);
     nl(parser);
+    emit_line(&parser->emitter, "){");
     // Zero or more statements in the body
     while (!check_token(parser, ENDWHILE)){
       statement(parser);
     }
     match(parser, ENDWHILE);
+    emit_line(&parser->emitter, "}");
   }
 
   else if (check_token(parser, LABEL)){
-    printf("    STATEMENT-LABEL \n");
     next_token(parser);
 
     // check if label already exists
@@ -125,14 +144,21 @@ void statement(Parser *parser){
       parser_aborted(parser);
     }
     add(&parser->labels_declared, parser->current_token.text);
-    
+
+    char* str = concat(parser->current_token.text, ":");
+
+    emit_line(&parser->emitter, str);
     match(parser, IDENT);
   }
 
   else if (check_token(parser, GOTO)){
-    printf("    STATEMENT-GOTO \n");
     next_token(parser);
     add(&parser->labels_gotoed, parser->current_token.text);
+
+    char* str_aux = concat("goto ", parser->current_token.text);
+    char* str = concat(str_aux, ";");
+
+    emit_line(&parser->emitter, str);
     match(parser, IDENT);
   }
 

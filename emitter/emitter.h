@@ -18,5 +18,6 @@ void emit(Emitter* emitter, char* code);
 void emit_line(Emitter* emitter, char* code);
 void header_line(Emitter* emitter, char* code);
 void write_file(Emitter* emitter);
+char* concat(char* dst, char* src);
 
 #endif

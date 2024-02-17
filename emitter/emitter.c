@@ -14,7 +14,6 @@ Emitter init_emitter(char* full_path){
   return emitter; 
 }
 
-
 char* concat(char* dst, char* src){
   // one additional space for ' ' and other for null character
   int total_size = strlen(dst) + strlen(src) + 2;
