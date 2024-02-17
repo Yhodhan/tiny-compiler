@@ -2,6 +2,7 @@
 #define EMITTER_H
 
 #include <stdlib.h>
+#include <ctype.h>
 #include <string.h>
 #include "../mem_tracker/mem_tracker.h"
 

@@ -103,7 +103,12 @@ char* copy_from_source(int begin, Lexer* lex) {
 
   int j = 0;
   for(int i = begin; i <= end; i++){
-    buffer[j] = lex->source[i]; 
+    // to avoid copy unnecesary quotes 
+    // this causes that inner strigs are not supported
+    if (lex->source[i] == '\"') 
+      buffer[j] = '\0';  
+    else 
+      buffer[j] = lex->source[i]; 
     j++;
   }
 

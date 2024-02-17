@@ -18,7 +18,7 @@ int main(int argc, char* argv[]){
   Parser parser = init_parser(lexer, emitter); 
 
   program(&parser);
-  printf("Parsing completed\n");
+  printf("Compiling completed\n");
 
   write_file(&parser.emitter);
      
