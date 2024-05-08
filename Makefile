@@ -6,6 +6,9 @@ compile:
 run: 
 	./compiler test/case.pcc
 
+format:
+	find . -iname *.h -o -iname *.cpp | xargs clang-format -style=llvm -i
+
 valgrind:
 	valgrind ./compiler test/case.pcc
 

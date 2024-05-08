@@ -8,15 +8,15 @@ typedef struct ListTracker ListTracker;
 typedef struct Node Node;
 
 struct Node {
-  void* ptr;
-  Node* next;
+  void *ptr;
+  Node *next;
 };
 
 struct ListTracker {
-  Node* head;
+  Node *head;
 };
 
-void  ufree();
-void* umalloc(unsigned int size); 
+void ufree();
+void *umalloc(unsigned int size);
 
 #endif

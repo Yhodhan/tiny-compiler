@@ -6,18 +6,18 @@
 #include <string.h>
 
 struct Set {
-  char** arr;
+  char **arr;
   int last_elem_index;
   unsigned int size;
   unsigned int capacity;
 };
 
-typedef struct Set Set ;
+typedef struct Set Set;
 
 Set init_set();
-void print_set(Set* set);
-void delete_set(Set* set);
-void add(Set* set, char* elem);
-int exists(Set* set, char* elem);
+void print_set(Set *set);
+void delete_set(Set *set);
+void add(Set *set, char *elem);
+int exists(Set *set, char *elem);
 
 #endif
