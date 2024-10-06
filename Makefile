@@ -1,25 +1,21 @@
+.PHONY: compile
 CFLAGS = -g -Wall -Wformat -Werror -Wextra -Wuninitialized -Winit-self -Wmaybe-uninitialized
 
-compile:
-	gcc $(CFLAGS) -o compiler $(shell find . -name  '*.c') 
+CC = gcc
+SRCS = $(wildcard *.c) $(wildcard */*.c)
+OBJS = $(patsubst %.c, %.o, $(SRCS))
 
-run: 
-	./compiler test/case.pcc
+TARGET = compiler
 
-format:
-	find . -iname *.h -o -iname *.c | xargs clang-format -style=llvm -i
+compile: $(TARGET)
 
-valgrind:
-	valgrind ./compiler test/case.pcc
+$(TARGET): $(OBJS)
+	$(CC) -o $@ $^
 
-debug:
-	gdb --args ./compiler test/case.pcc
-	
+%.o: %.c
+	$(CC) $(CFLAGS) -c $^ -o $@
+
 clean:
+	rm  **/*.o *.o
 	rm compiler 
 	rm emit.c
-
-
-
-
-	
